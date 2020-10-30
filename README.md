@@ -113,3 +113,7 @@ export default firebase;
 ## Setting up Styling
 
 [Setting Up Tailwind CSS In A React Project](https://www.smashingmagazine.com/2020/02/tailwindcss-react-project/)
+
+## Component Library with Storybook
+
+[Start a component library with Storybook, Tailwind, and Typescript.](https://dev.to/elisealcala/start-a-component-library-with-storybook-tailwind-and-typescript-2ofa)

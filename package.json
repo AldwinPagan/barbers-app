@@ -22,7 +22,9 @@
     "build": "npm run watch:css && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "watch:css": "postcss src/styles/tailwind.css -o src/styles/main.css"
+    "watch:css": "postcss src/styles/tailwind.css -o src/styles/main.css",
+    "storybook": "start-storybook -p 6006 -s public --no-dll",
+    "build-storybook": "build-storybook -s public --no-dll"
   },
   "eslintConfig": {
     "extends": [
@@ -43,8 +45,21 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@storybook/addon-actions": "^6.0.27",
+    "@storybook/addon-essentials": "^6.0.27",
+    "@storybook/addon-links": "^6.0.27",
+    "@storybook/node-logger": "^6.0.27",
+    "@storybook/preset-create-react-app": "^3.1.4",
+    "@storybook/react": "^6.0.27",
     "autoprefixer": "^9.8.6",
+    "babel-loader": "^8.1.0",
     "postcss-cli": "^8.1.0",
+    "react-is": "^17.0.1",
     "tailwindcss": "^1.9.6"
+  },
+  "resolutions": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   }
 }
