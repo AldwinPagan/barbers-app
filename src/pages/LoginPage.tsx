@@ -1,17 +1,30 @@
 import { FC, useState } from "react";
+import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
-import { Card } from "primereact/card";
-import { Button } from "primereact/button";
-import "primeflex/primeflex.css";
+import {
+  SubmitButton,
+  TextNavigationButton,
+} from "../shared/components/buttons";
+
 export const LoginPage: FC = () => {
   const [password, setPassword] = useState<string | undefined>(undefined);
   const [username, setUsername] = useState<string | undefined>(undefined);
 
+  const isFormValid = (): boolean => {
+    return true;
+  };
+
+  const submitLoginRequest = (): void => {
+    if (isFormValid()) {
+      console.log("Login Request submitted");
+    }
+  };
+
   const footer = (
     <div className="p-grid p-justify-between">
-      <Button className="p-button-link" label="Forgot Password?" />
-      <Button className="p-mr-2" label="Login" />
+      <TextNavigationButton text="Forgot Password?" to="/forgot-password" />
+      <SubmitButton text="Login" onClick={() => submitLoginRequest()} />
     </div>
   );
 
@@ -25,11 +38,10 @@ export const LoginPage: FC = () => {
       <div className="p-fluid ">
         <div className="p-field">
           <label htmlFor="username">Username</label>
-
           <InputText
             id="username"
             type="text"
-            placeholder={"user@example.com"}
+            placeholder="user@example.com"
             value={username}
             onChange={(e) => setUsername(e.currentTarget.value)}
           />
@@ -37,8 +49,8 @@ export const LoginPage: FC = () => {
         <div className="p-field">
           <label htmlFor="password">Password</label>
           <Password
-            id="password"
             toggleMask={true}
+            id="password"
             value={password}
             onChange={(e) => setPassword(e.currentTarget.value)}
           />
