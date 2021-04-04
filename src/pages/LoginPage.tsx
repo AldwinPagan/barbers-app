@@ -24,36 +24,45 @@ export const LoginPage: FC = () => {
   const footer = (
     <div className="p-grid p-justify-between">
       <TextNavigationButton text="Forgot Password?" to="/forgot-password" />
-      <SubmitButton text="Login" onClick={() => submitLoginRequest()} />
+      <SubmitButton
+        text="Login"
+        onClick={() => submitLoginRequest()}
+        disabled={!(username && password)}
+      />
     </div>
   );
 
   return (
     <Card
-      className="p-shadow-10 p-d-block p-mx-auto"
-      style={{ width: "25rem" }}
+      className="p-shadow-10 p-d-block p-mx-auto p-mt-6"
+      style={{ width: "25rem"}}
       title="Login"
       footer={footer}
     >
-      <div className="p-fluid ">
+      <div className="p-fluid">
         <div className="p-field">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="username" className={`${!username ? "p-error" : ""}`}>Username</label>
           <InputText
             id="username"
             type="text"
+            keyfilter="email"
             placeholder="user@example.com"
             value={username}
             onChange={(e) => setUsername(e.currentTarget.value)}
+            className={`${!username ? "p-invalid" : ""}`}
           />
+          {!username && <small className="p-error">Username is required.</small>}
         </div>
         <div className="p-field">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password" className={`${!password ? "p-error" : ""}`}>Password</label>
           <Password
-            toggleMask={true}
+            feedback={false}
             id="password"
             value={password}
             onChange={(e) => setPassword(e.currentTarget.value)}
+            className={`${!password ? "p-invalid" : ""}`}
           />
+          {!password && <small className="p-error">Password is required.</small>}
         </div>
       </div>
     </Card>

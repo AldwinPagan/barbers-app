@@ -31,7 +31,7 @@ const ForgotPasswordPage: React.FC = () => {
 
   return (
     <Card
-      className="p-shadow-10 p-d-block p-mx-auto"
+      className="p-shadow-10 p-d-block p-mx-auto p-mt-6"
       style={{ width: "25rem" }}
       title="Forgot Password"
       header={header}
@@ -39,15 +39,23 @@ const ForgotPasswordPage: React.FC = () => {
     >
       <div className="p-fluid">
         <div className="p-field">
-          <label htmlFor="username">Username</label>
+          <label
+            htmlFor="username"
+            className={`${!username ? "p-error" : ""}`}
+          >
+            Username
+          </label>
           <InputText
             id="username"
             type="text"
+            keyfilter="email"
             placeholder={"user@example.com"}
             value={username}
             onChange={(e) => setUsername(e.currentTarget.value)}
+            className={`${!username ? "p-invalid" : ""}`}
           />
         </div>
+        {!username && <small className="p-error">Username is required.</small>}
       </div>
     </Card>
   );
