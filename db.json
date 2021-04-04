@@ -1,8 +1,15 @@
 {
-    "users": [
+    "login": [
         {
             "email": "example@domain.com",
-            "password": "12345678"
+            "password": "12345678",
+            "accessToken": "accessToken",
+            "refresToken": "refresToken"
+        },
+        {
+            "email": "invalid@domain.com",
+            "password": "87654321",
+            "message": "Token signature expired."
         }
     ]
 }
