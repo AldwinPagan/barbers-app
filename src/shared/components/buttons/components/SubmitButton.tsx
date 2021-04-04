@@ -5,7 +5,7 @@ interface SubmitButtonProps extends React.HTMLProps<HTMLButtonElement> {
 }
 const SubmitButton: React.FC<SubmitButtonProps> = (props) => {
   return (
-    <Button className="p-mr-2" label={props.text} onClick={props.onClick} />
+    <Button className="p-mr-2" label={props.text} onClick={props.onClick} disabled={props.disabled}/>
   );
 };
 
