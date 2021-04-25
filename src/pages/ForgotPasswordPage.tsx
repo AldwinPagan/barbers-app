@@ -1,33 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { InputText } from "primereact/inputtext";
 import { Card } from "primereact/card";
 import {
   SubmitButton,
   BackNavigationButton,
 } from "../shared/components/buttons";
+import { useForm } from "react-hook-form";
 
 const ForgotPasswordPage: React.FC = () => {
-  const [username, setUsername] = useState<string | undefined>(undefined);
+  interface ForgotPasswordFormValues {
+    email: string;
+  }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ForgotPasswordFormValues>();
 
-  const isFormValid = (): boolean => {
-    return true;
+  const onSubmit = (data: any): void => {
+    console.log(data);
+    console.log("Forgot Password Request submitted");
   };
 
-  const submitForgotPasswordRequest = (): void => {
-    if (isFormValid()) {
-      console.log("Forgot Password Request submitted");
-    }
-  };
-
-  const header = <BackNavigationButton to="/login" text="Back" />;
-  const footer = (
-    <div className="p-grid p-justify-end">
-      <SubmitButton
-        text="Submit"
-        onClick={() => submitForgotPasswordRequest()}
-      />
-    </div>
-  );
+  const header = <BackNavigationButton to="login" text="Back" />;
 
   return (
     <Card
@@ -35,28 +30,36 @@ const ForgotPasswordPage: React.FC = () => {
       style={{ width: "25rem" }}
       title="Forgot Password"
       header={header}
-      footer={footer}
     >
-      <div className="p-fluid">
-        <div className="p-field">
-          <label
-            htmlFor="username"
-            className={`${!username ? "p-error" : ""}`}
-          >
-            Username
-          </label>
-          <InputText
-            id="username"
-            type="text"
-            keyfilter="email"
-            placeholder={"user@example.com"}
-            value={username}
-            onChange={(e) => setUsername(e.currentTarget.value)}
-            className={`${!username ? "p-invalid" : ""}`}
-          />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="p-fluid">
+          <div className="p-field">
+            <label htmlFor="email" className={`${errors.email && "p-error"}`}>
+              Email
+            </label>
+            <InputText
+              id="email"
+              type="text"
+              keyfilter="email"
+              placeholder="user@example.com"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                  message: "Invalid email",
+                },
+              })}
+              className={`${errors.email && "p-invalid"}`}
+            />
+            {errors.email && (
+              <small className="p-error">{errors.email?.message}</small>
+            )}
+          </div>
         </div>
-        {!username && <small className="p-error">Username is required.</small>}
-      </div>
+        <div className="p-grid p-justify-end p-mt-3">
+          <SubmitButton text="Submit" />
+        </div>
+      </form>
     </Card>
   );
 };

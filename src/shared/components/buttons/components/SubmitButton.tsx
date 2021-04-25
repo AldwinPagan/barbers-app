@@ -1,11 +1,13 @@
 import { Button } from "primereact/button";
+import { PropsWithChildren } from "react";
 interface SubmitButtonProps extends React.HTMLProps<HTMLButtonElement> {
   text: string;
-  onClick: () => void;
+  onSubmit?: () => void;
+  onClick?: () => void;
 }
-const SubmitButton: React.FC<SubmitButtonProps> = (props) => {
+const SubmitButton: React.FC<SubmitButtonProps> = ({onSubmit, text}: PropsWithChildren<SubmitButtonProps>) => {
   return (
-    <Button className="p-mr-2" label={props.text} onClick={props.onClick} disabled={props.disabled}/>
+    <Button type="submit" className="p-mr-2" label={text} onSubmit={onSubmit} />
   );
 };
 
