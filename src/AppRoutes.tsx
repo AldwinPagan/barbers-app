@@ -1,21 +1,17 @@
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 import App from "./App";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import { LoginPage } from "./pages/LoginPage";
-export const AppRoutes: React.FC = () => {
+import LoginPage from "./pages/LoginPage";
+import TenantPage from "./pages/TenantPage";
+import { FC } from "react";
+
+export const AppRoutes: FC = () => {
   return (
     <BrowserRouter>
-      <Switch>
-        <Route path="/login">
-          <LoginPage />
-        </Route>
-        <Route path="/forgot-password">
-          <ForgotPasswordPage />
-        </Route>
-        <Route path="/">
-          <App />
-        </Route>
-      </Switch>
+      <Route exact path="/" component={App} />
+      <Route path="/auth/login" component={LoginPage} />
+      <Route path="/auth/forgot-password" component={ForgotPasswordPage} />
+      <Route exact path="/tenant/:tenantId" component={TenantPage} />
     </BrowserRouter>
   );
 };
