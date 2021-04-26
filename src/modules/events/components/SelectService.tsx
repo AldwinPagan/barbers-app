@@ -2,16 +2,16 @@ import { FC } from "react";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
-import { ServiceProps } from "../../users/components/UserCard";
+import { Service } from "../models/Service";
 
-interface ServiceCardProps extends ServiceProps {
+interface ServiceCardProps {
+  service: Service;
   footer?: Card.TemplateTypes;
   selectedService?: boolean;
-  onClick: () => void;
+  onClick: (serviceId: number) => void;
 }
 const SelectService: FC<ServiceCardProps> = ({
-  serviceId,
-  service,
+  service: { id, name },
   selectedService = false,
   onClick,
 }) => {
@@ -27,16 +27,19 @@ const SelectService: FC<ServiceCardProps> = ({
   );
 
   return (
-    <Button className=" p-button-text " onClick={onClick}>
+    <Button className=" p-button-text " onClick={() => onClick(id)}>
       <Card
-        title={service}
         style={{ width: "15rem", marginBottom: "2em" }}
         header={header}
         className={`${
           selectedService ? "p-shadow-12" : "p-shadow-3"
         } p-m-3 p-col-12 p-lg-3 p-xl-3`}
-        key={serviceId}
-      ></Card>
+        key={id}
+      >
+        <div className="p-card-title" style={{ textAlign: "start" }}>
+          {name}
+        </div>
+      </Card>
     </Button>
   );
 };
