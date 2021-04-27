@@ -26,7 +26,7 @@ const DateAndTimeSelection: FC = () => {
   ];
 
   const isSelected = (value: boolean): string => {
-    return value ? "p-button-plain p-button-text" : "p-button-rounded";
+    return value ? "p-button-plain p-button-text" : "p-button-rounded p-shadow-12";
   };
   return (
     <>
@@ -37,7 +37,7 @@ const DateAndTimeSelection: FC = () => {
           label={value}
           value={value}
           onClick={(e) => setMonth(e.currentTarget.value)}
-          className={`${isSelected(month !== value)} p-m-2`}
+          className={`${isSelected(month !== value)} p-button-lg p-m-2`}
         />
       ))}
 
@@ -52,9 +52,9 @@ const DateAndTimeSelection: FC = () => {
           className={`${isSelected(dateOfMonth !== date.dateOfMonth)} p-m-2`}
         >
           <div className="p-button-text">
-            <span>{date.dateOfMonth}</span>
+            <span>{date.weekDay.substring(0,3)}</span>
             <br />
-            <span>{date.weekDay}</span>
+            <span>{date.dateOfMonth}</span>
           </div>
         </Button>
       ))}
