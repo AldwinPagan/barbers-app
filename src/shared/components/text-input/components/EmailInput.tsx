@@ -1,13 +1,15 @@
 import { FC } from "react";
 import { InputText } from "primereact/inputtext";
-import { DeepMap, FieldError, UseFormRegister } from "react-hook-form";
+import { DeepMap, FieldError, Path, UseFormRegister } from "react-hook-form";
 
 interface EmailInputProps {
+  label: Path<any>;
   register: UseFormRegister<any>;
-  errors: DeepMap<any, FieldError>;
+  errors?: DeepMap<any, FieldError>;
   required?: boolean;
 }
 const EmailInput: FC<EmailInputProps> = ({
+  label,
   register,
   errors,
   required = true,
@@ -16,21 +18,21 @@ const EmailInput: FC<EmailInputProps> = ({
   return (
     <>
       <InputText
-        id="email"
+        id={label}
         type="text"
         keyfilter="email"
         placeholder="user@example.com"
-        {...register("email", {
+        {...register(label, {
           required: required && "Email is required",
           pattern: {
             value: EMAIL_EXPRESSION,
             message: "Invalid email",
           },
         })}
-        className={`${errors.email && "p-invalid"}`}
+        className={`${errors && "p-invalid"}`}
       />
-      {errors.email && (
-        <small className="p-error">{errors.email?.message}</small>
+      {errors && (
+        <small className="p-error">{errors?.message}</small>
       )}
     </>
   );
