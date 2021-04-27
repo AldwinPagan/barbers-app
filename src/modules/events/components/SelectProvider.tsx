@@ -6,8 +6,8 @@ import ProviderCard from "./ProviderCard";
 
 interface SelectedProps {
   provider: Provider;
-  disabled: boolean;
-  selectedProvider: boolean;
+  disabled?: boolean;
+  selectedProvider?: boolean;
   onClick: (providerId: string) => void;
 }
 const SelectProvider: FC<SelectedProps> = ({
@@ -30,7 +30,11 @@ const SelectProvider: FC<SelectedProps> = ({
   );
 
   return (
-    <Button className="p-button-text " onClick={() => onClick(provider.id)}>
+    <Button
+      className="p-button-text"
+      type="button"
+      onClick={() => onClick(provider.id)}
+    >
       <ProviderCard
         key={provider.id}
         {...{

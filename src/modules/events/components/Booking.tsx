@@ -2,20 +2,19 @@ import { FC, useState } from "react";
 import { MenuItem } from "primereact/components/menuitem/MenuItem";
 import { Steps } from "primereact/steps";
 import { Card } from "primereact/card";
-import { ProviderAndServiceSelection } from ".";
-import { Checkbox } from "primereact/checkbox";
+import { Divider } from "primereact/divider";
+
+import {
+  ProviderAndServiceSelection,
+  FillGuestDetails,
+  DateAndTimeSelection,
+} from ".";
 import { Button } from "primereact/button";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { Provider } from "../models/Provider";
-import { Service } from "../models/Service";
-interface BookingProps {
-  providers: Provider[];
-  services: Service[];
-}
 interface FormValues {
   providerAndServiceSelection: {
-    providerId: string;
+    providerId: string | null;
     anyMemberSelected?: boolean;
     serviceIds: number[];
   };
@@ -28,53 +27,28 @@ interface FormValues {
   personalInformation: {
     firstName: string;
     lastName: string;
-    contactMethod: "SMS" | "Email" | "Call";
+    contactMethod: string;
     email?: string;
     phoneNumber?: string;
   };
 }
-const Booking: FC<BookingProps> = ({ providers, services }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>();
+const Booking: FC = () => {
+  const // {
+    //   register,
+    //   handleSubmit,
+    //   setValue,
+    //   getValues,
+    //   formState: { errors },
+    // }
+    bookingForm = useForm<FormValues>({ mode: "onTouched" });
 
   let { tenantId } = useParams<{ tenantId: string }>();
 
-  const [selectedProviderId, setselectedProviderId] = useState<string | null>(
-    null
-  );
-  const [selectedAnyMember, setSelectedAnyMember] = useState<boolean>(false);
-  const [selectedServiceIds, setSelectedServiceIds] = useState<number[]>([]);
   const [activeStepIndex, setActiveStepIndex] = useState(0);
-  const [date, setDate] = useState<Date>(new Date());
-  const [time, setTime] = useState<string | null>(null);
 
   console.log({
-    selectedProviderId,
-    selectedAnyMember,
-    selectedServiceIds,
     activeStepIndex,
   });
-  const onServiceClick = (serviceId: number) => {
-    let selectedIds = [...selectedServiceIds];
-
-    if (!selectedIds.includes(serviceId)) selectedIds.push(serviceId);
-    else selectedIds.splice(selectedIds.indexOf(serviceId), 1);
-
-    setSelectedServiceIds(selectedIds);
-  };
-
-  const onServiceChange = ({ checked }: Checkbox.ChangeParams) => {
-    setSelectedAnyMember(checked);
-    setselectedProviderId(null);
-  };
-
-  const onProviderClick = (providerId: string) => {
-    setselectedProviderId(providerId);
-    setSelectedAnyMember(false);
-  };
 
   const onNextClick = () => {
     setActiveStepIndex(
@@ -101,24 +75,14 @@ const Booking: FC<BookingProps> = ({ providers, services }) => {
   const renderSwitch = (index: number): JSX.Element => {
     switch (index) {
       case 1:
-        return <p>Date Selection</p>;
+        return <DateAndTimeSelection />;
       case 2:
-        return <p>Fill Personal Details</p>;
+        return <FillGuestDetails />;
       default:
-        return (
-          <ProviderAndServiceSelection
-            services={services}
-            providers={providers}
-            onServiceClick={onServiceClick}
-            onProviderClick={onProviderClick}
-            onServiceChange={onServiceChange}
-            selectedAnyMember={selectedAnyMember}
-            selectedProviderId={selectedProviderId}
-            selectedServiceIds={selectedServiceIds}
-          />
-        );
+        return <ProviderAndServiceSelection />;
     }
   };
+
   return (
     <>
       <Card
@@ -132,6 +96,7 @@ const Booking: FC<BookingProps> = ({ providers, services }) => {
           readOnly={true}
         />
         {renderSwitch(activeStepIndex)}
+        <Divider />
         <div className="p-grid p-justify-start ">
           {activeStepIndex > 0 && (
             <Button
