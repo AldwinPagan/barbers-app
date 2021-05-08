@@ -1,7 +1,8 @@
 import { createStore, applyMiddleware, combineReducers, compose } from "redux";
 import thunk from "redux-thunk";
+import events from "../../../modules/events/redux/reducers";
 
-const reducers = {  };
+const reducers = { events };
 
 export default function configureStore(initialState = {}) {
   const composeEnhancer =
