@@ -1,53 +1,37 @@
 import { FC, useState } from "react";
 import { MenuItem } from "primereact/components/menuitem/MenuItem";
 import { Steps } from "primereact/steps";
-import { Card } from "primereact/card";
 import { Divider } from "primereact/divider";
-
+import { Card } from "primereact/card";
 import {
   ProviderAndServiceSelection,
   FillGuestDetails,
   DateAndTimeSelection,
 } from ".";
 import { Button } from "primereact/button";
-import { useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-interface FormValues {
-  providerAndServiceSelection: {
-    providerId: string | null;
-    anyMemberSelected?: boolean;
-    serviceIds: number[];
-  };
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { EventState } from "../redux/states";
+import * as eventOperators from "../redux/operators";
+import {
+  RouteComponentProps,
+  useParams,
+  Router,
+  Redirect,
+} from "@reach/router";
 
-  dateAndTimeSelection: {
-    date: Date;
-    time: string;
-  };
-
-  personalInformation: {
-    firstName: string;
-    lastName: string;
-    contactMethod: string;
-    email?: string;
-    phoneNumber?: string;
-  };
+interface BookingProps
+  extends eventOperators.IEventOperators,
+    RouteComponentProps {
+  events: EventState;
 }
-const Booking: FC = () => {
-  const // {
-    //   register,
-    //   handleSubmit,
-    //   setValue,
-    //   getValues,
-    //   formState: { errors },
-    // }
-    bookingForm = useForm<FormValues>({ mode: "onTouched" });
-
-  let { tenantId } = useParams<{ tenantId: string }>();
+const Booking: FC<BookingProps> = (props) => {
+  let { tenantId } = useParams();
 
   const [activeStepIndex, setActiveStepIndex] = useState(0);
 
-  console.log({
-    activeStepIndex,
+  console.log("Booking Component", {
+    props,
   });
 
   const onNextClick = () => {
@@ -63,7 +47,7 @@ const Booking: FC = () => {
   };
   const items: MenuItem[] = [
     {
-      label: "Choose Service and Provider",
+      label: "Choose Services and Provider",
     },
     {
       label: "Choose Date and Time",
@@ -72,14 +56,16 @@ const Booking: FC = () => {
       label: "Fill in Personal Details",
     },
   ];
+
   const renderSwitch = (index: number): JSX.Element => {
     switch (index) {
       case 1:
-        return <DateAndTimeSelection />;
+        return <DateAndTimeSelection {...props}/>;
       case 2:
-        return <FillGuestDetails />;
+        return <FillGuestDetails {...props}/>;
+      case 0:
       default:
-        return <ProviderAndServiceSelection />;
+        return <ProviderAndServiceSelection {...props}/>;
     }
   };
 
@@ -97,7 +83,7 @@ const Booking: FC = () => {
         />
         {renderSwitch(activeStepIndex)}
         <Divider />
-        <div className="p-grid p-justify-start ">
+        <div className="p-grid p-justify-start">
           {activeStepIndex > 0 && (
             <Button
               label="Previous"
@@ -109,16 +95,7 @@ const Booking: FC = () => {
           )}
           {activeStepIndex < 2 && (
             <Button
-              label="Next"
-              className="p-m-3"
-              onClick={() => {
-                onNextClick();
-              }}
-            />
-          )}
-          {activeStepIndex === 2 && (
-            <Button
-              label="Submit"
+              label={"Next"}
               className="p-m-3"
               onClick={() => {
                 onNextClick();
@@ -131,4 +108,18 @@ const Booking: FC = () => {
   );
 };
 
+function mapStateToProps({ events }: { events: EventState }) {
+  return {
+    events,
+  };
+}
+
+function mapDispatchToProps(dispatch: any) {
+  return bindActionCreators(
+    {
+      ...eventOperators,
+    },
+    dispatch
+  );
+}
 export default Booking;

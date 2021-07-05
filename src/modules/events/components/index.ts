@@ -13,5 +13,5 @@ export {
   ProviderAndServiceSelection,
   Booking,
   FillGuestDetails,
-  DateAndTimeSelection
+  DateAndTimeSelection,
 };

@@ -1,29 +1,26 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import { SelectProvider, SelectService } from "./";
 import { Checkbox } from "primereact/checkbox";
-import { Divider } from "primereact/divider";
+import { Button } from "primereact/button";
 import { Provider } from "../models/Provider";
 import { Service } from "../models/Service";
-import { useForm } from "react-hook-form";
-import { SubmitButton } from "../../../shared/components/buttons";
+import * as eventOperators from "../redux/operators";
+import { EventState } from "../redux/states";
+import { RouteComponentProps, useNavigate } from "@reach/router";
 
-interface ProviderAndServiceSelectionFormValues {
-  providerId: string | null;
-  anyProvider?: boolean;
-  serviceIds: number[];
+interface ProviderAndServiceSelectionProps
+  extends eventOperators.IEventOperators,
+    RouteComponentProps {
+  events: EventState;
 }
 
-const ProviderAndServiceSelection: FC = () => {
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    getValues,
-    watch,
-    formState: { errors },
-  } = useForm<ProviderAndServiceSelectionFormValues>({
-    defaultValues: { serviceIds: [] },
-  });
+const ProviderAndServiceSelection: FC<ProviderAndServiceSelectionProps> = (
+  props
+) => {
+  const navigate = useNavigate();
+  const [serviceIds, setServiceIds] = useState<number[]>([]);
+  const [anyProvider, setAnyProvider] = useState<boolean>(false);
+  const [providerId, setProviderId] = useState<string>("");
   const tenantServices = useMemo<Service[]>(
     () => [
       { id: 0, name: "Service 1" },
@@ -68,74 +65,83 @@ const ProviderAndServiceSelection: FC = () => {
     []
   );
   const onServiceClick = (serviceId: number) => {
-    let selectedIds = watch("serviceIds");
+    let selectedIds = [...serviceIds];
 
     if (!selectedIds.includes(serviceId)) selectedIds.push(serviceId);
     else selectedIds.splice(selectedIds.indexOf(serviceId), 1);
 
-    setValue("serviceIds", selectedIds);
-    console.log(watch("serviceIds"));
+    setServiceIds([...selectedIds]);
   };
 
   const onCheckboxChange = ({ checked }: Checkbox.ChangeParams) => {
-    setValue("anyProvider", checked);
-    setValue("providerId", null);
+    setAnyProvider(checked);
+    setProviderId("");
   };
 
   const onProviderClick = (providerId: string) => {
-    setValue("providerId", providerId);
-    setValue("anyProvider", false);
+    setProviderId(providerId);
+    setAnyProvider(false);
   };
 
-  const onSubmit = (data: ProviderAndServiceSelectionFormValues) => {
-    // TODO: Save on Redux Store
-    console.log("ProviderAndServiceSelection", data);
-    // TODO: props.history.push("Next page") check reac-router-dom
+  const onSubmit = async () => {
+    const form = {
+      ...props.events.bookingForm,
+      serviceIds,
+      providerId: providerId ? providerId : null,
+      anyProvider,
+    };
+    props.updateBookingProviderAndServices(form);
+    await navigate(`date-and-time-selection`, { state: props.events });
   };
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <h2>Choose Services</h2>
-        <div className="p-grid p-justify-start">
-          {tenantServices.map((service) => (
-            <SelectService
-              key={service.id}
-              {...{
-                service,
-                selectedService: getValues("serviceIds")?.includes(service.id),
-                onClick: onServiceClick,
-              }}
-              {...(register("serviceIds"))}
-            />
-          ))}
-        </div>
-        <h2>Choose a Service Provider</h2>
-        <div className="p-field-checkbox p-invalid">
-          <Checkbox
-            inputId="anyProvider"
-            {...register("anyProvider")}
-            onChange={onCheckboxChange}
-            checked={watch("anyProvider")}
-          ></Checkbox>
-          <label htmlFor="anyProvider" className="p-m-2">
-            Select Service Provider for me
-          </label>
-        </div>
-        <div className="p-grid p-justify-start">
-          {providers.map((provider) => (
-            <SelectProvider
-              key={provider.id}
-              {...{
-                provider,
-                disabled: watch("anyProvider"),
-                selectedProvider: getValues("providerId") === provider.id,
-                ...register("providerId"),
-                onClick: onProviderClick,
-              }}
-            />
-          ))}
-        </div>
-      </form>
+      <h2>Choose a Service Provider</h2>
+      {!anyProvider && !providerId && (
+        <small className="p-error">
+          {"Service Provider selection is required"}
+        </small>
+      )}
+      <div className="p-field-checkbox p-invalid">
+        <Checkbox
+          inputId="anyProvider"
+          onChange={onCheckboxChange}
+          checked={anyProvider}
+        ></Checkbox>
+        <label htmlFor="anyProvider" className="p-m-2">
+          Select Service Provider for me
+        </label>
+      </div>
+      <div className="p-grid p-justify-start">
+        {providers.map((provider) => (
+          <SelectProvider
+            key={provider.id}
+            {...{
+              provider,
+              disabled: anyProvider,
+              selectedProvider: providerId === provider.id,
+              onClick: onProviderClick,
+            }}
+          />
+        ))}
+      </div>
+      <h2>Choose Services</h2>
+      {serviceIds.length === 0 && (
+        <small className="p-error">{"Services selection is required"}</small>
+      )}
+
+      <div className="p-grid p-justify-start">
+        {tenantServices.map((service) => (
+          <SelectService
+            key={service.id}
+            {...{
+              service,
+              selectedService: serviceIds.includes(service.id),
+              onClick: onServiceClick,
+            }}
+          />
+        ))}
+      </div>
+      {/* <Button label="Submit" onClick={onSubmit} /> */}
     </>
   );
 };

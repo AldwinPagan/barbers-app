@@ -6,6 +6,10 @@ import {
   PhoneNumberInput,
 } from "../../../shared/components/text-input";
 import { useForm } from "react-hook-form";
+import { RouteComponentProps, useParams } from "@reach/router";
+import * as eventOperators from "../redux/operators";
+import { EventState } from "../redux/states";
+import { Booking } from "../models/Booking";
 
 interface contactMethod {
   name: string;
@@ -19,7 +23,15 @@ interface FillGuestDetailsFormValues {
   phoneNumber?: string;
   contactMethod: string;
 }
-const FillGuestDetails: FC = () => {
+
+interface FillGuestDetailsProps
+  extends eventOperators.IEventOperators,
+    RouteComponentProps<any> {
+  events: EventState;
+}
+
+const FillGuestDetails: FC<FillGuestDetailsProps> = (props) => {
+  let { tenantId } = useParams();
   const {
     register,
     handleSubmit,
@@ -29,10 +41,15 @@ const FillGuestDetails: FC = () => {
   } = useForm<FillGuestDetailsFormValues>({ mode: "onTouched" });
 
   const onSubmit = (data: FillGuestDetailsFormValues) => {
-    // TODO: Save on Redux Store
-    console.log("FillGuestDetailsFormValues", data);
-    // TODO: props.history.push("Next page") check reac-router-dom
+    const form = {
+      ...props.events.bookingForm,
+      ...data,
+      tenantId,
+    };
+    props.submitBooking(form);
+    console.log("Fill  Guest Details", { ...props.events.bookingForm });
   };
+
   const contactMethods: contactMethod[] = [
     { name: "Text Message", code: "SMS" },
     { name: "Email", code: "Email" },
@@ -61,7 +78,7 @@ const FillGuestDetails: FC = () => {
               })}
             />
             {errors?.firstName && (
-              <small className="p-error">{"First Name required"}</small>
+              <small className="p-error">{errors?.firstName.message}</small>
             )}
           </div>
           <div className="p-field">
@@ -82,7 +99,7 @@ const FillGuestDetails: FC = () => {
               })}
             />
             {errors?.lastName && (
-              <small className="p-error">{"First Name required"}</small>
+              <small className="p-error">{errors?.lastName.message}</small>
             )}
           </div>
 
@@ -137,6 +154,7 @@ const FillGuestDetails: FC = () => {
             )}
           </div>
         </div>
+        {/* <input type="Submit" value="Submit" /> */}
       </form>
     </>
   );

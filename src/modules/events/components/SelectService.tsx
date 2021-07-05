@@ -1,9 +1,8 @@
-import { createRef, FC, forwardRef, RefObject } from "react";
+import { FC } from "react";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { Service } from "../models/Service";
-import { UseFormRegisterReturn } from "react-hook-form";
 
 interface SelectServiceProps {
   service: Service;
@@ -11,7 +10,7 @@ interface SelectServiceProps {
   onClick: (serviceId: number) => void;
 }
 const SelectService: FC<SelectServiceProps> = ({
-  service: { id, name },
+  service:{id, name},
   selectedService = false,
   onClick,
 }) => {
@@ -29,14 +28,12 @@ const SelectService: FC<SelectServiceProps> = ({
   return (
     <>
       <Button
-        className=" p-button-text"
+        className="p-button-text"
         type="button"
-        onClick={() => {
-          onClick(id);
-        }}
+        onClick={() => {onClick(id)}}
       >
         <Card
-          style={{ width: "15rem", marginBottom: "2em" }}
+          style={{ width: "10rem"}}
           header={header}
           className={`${
             selectedService ? "p-shadow-12" : "p-shadow-3"
