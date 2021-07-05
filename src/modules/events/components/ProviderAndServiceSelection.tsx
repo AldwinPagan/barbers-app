@@ -1,6 +1,6 @@
 import { FC, useMemo, useState } from "react";
 import { SelectProvider, SelectService } from "./";
-import { Checkbox } from "primereact/checkbox";
+import { Checkbox, CheckboxChangeParams } from "primereact/checkbox";
 import { Button } from "primereact/button";
 import { Provider } from "../models/Provider";
 import { Service } from "../models/Service";
@@ -73,7 +73,7 @@ const ProviderAndServiceSelection: FC<ProviderAndServiceSelectionProps> = (
     setServiceIds([...selectedIds]);
   };
 
-  const onCheckboxChange = ({ checked }: Checkbox.ChangeParams) => {
+  const onCheckboxChange = ({ checked }: CheckboxChangeParams) => {
     setAnyProvider(checked);
     setProviderId("");
   };
