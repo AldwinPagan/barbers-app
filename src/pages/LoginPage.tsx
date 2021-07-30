@@ -35,10 +35,10 @@ const LoginPage: FC = () => {
             <label htmlFor="email" className={`${errors.email && "p-error"}`}>
               Email
             </label>
-            <EmailInput register={register} errors={errors} />
+            <EmailInput label="email" register={register} errors={errors} />
           </div>
           <div className="p-field">
-            <PasswordInput register={register} errors={errors} />
+            <PasswordInput label="password" register={register} errors={errors} />
           </div>
         </div>
         <div className="p-grid p-justify-between p-mt-3">
