@@ -36,8 +36,7 @@ const ProviderCard: FC<ProviderCardProps> = ({
       } p-m-3 p-col-12 p-lg-3 p-xl-3`}
       key={id}
       footer={footer}
-    >
-    </Card>
+    ></Card>
   );
 };
 
