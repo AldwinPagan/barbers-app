@@ -2,42 +2,54 @@ import { FC, useState } from "react";
 import { MenuItem } from "primereact/components/menuitem/MenuItem";
 import { Steps } from "primereact/steps";
 import { Divider } from "primereact/divider";
-import { Card } from "primereact/card";
 import {
   ProviderAndServiceSelection,
   FillGuestDetails,
   DateAndTimeSelection,
 } from ".";
 import { Button } from "primereact/button";
-import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { EventState } from "../redux/states";
 import * as eventOperators from "../redux/operators";
-import {
-  RouteComponentProps,
-  useParams,
-  Router,
-  Redirect,
-} from "@reach/router";
+import { RouteComponentProps, useParams } from "@reach/router";
 
-interface BookingProps
-  extends eventOperators.IEventOperators,
-    RouteComponentProps {
+import { useForm } from "react-hook-form";
+import { Booking as BookingModel } from "../models/Booking";
+
+interface BookingProps extends RouteComponentProps {
+  submitBooking: (booking: BookingModel) => void;
   events: EventState;
 }
+
 const Booking: FC<BookingProps> = (props) => {
   let { tenantId } = useParams();
+  const {
+    trigger,
+    register,
+    setValue,
+    getValues,
+    watch,
+    handleSubmit,
+
+    formState: { errors },
+    control,
+  } = useForm<BookingModel>({
+    mode: "onChange",
+    defaultValues: {
+      serviceIds: [],
+    },
+  });
 
   const [activeStepIndex, setActiveStepIndex] = useState(0);
 
-  console.log("Booking Component", {
-    props,
-  });
+  console.log("Booking Component", getValues());
 
-  const onNextClick = () => {
-    setActiveStepIndex(
-      activeStepIndex < 3 ? activeStepIndex + 1 : activeStepIndex
-    );
+  const onNextClick = async () => {
+    const isStepValid = await trigger();
+    if (isStepValid)
+      setActiveStepIndex(
+        activeStepIndex < 3 ? activeStepIndex + 1 : activeStepIndex
+      );
   };
 
   const onPreviousClick = () => {
@@ -57,53 +69,81 @@ const Booking: FC<BookingProps> = (props) => {
     },
   ];
 
+  const onSubmit = (data: BookingModel) => {
+    const form = {
+      // ...props.events.bookingForm,
+      ...data,
+      tenantId,
+    };
+    props.submitBooking(form);
+    // console.log("Fill  Guest Details", { ...props.events.bookingForm });
+  };
+
   const renderSwitch = (index: number): JSX.Element => {
     switch (index) {
       case 1:
-        return <DateAndTimeSelection {...props}/>;
+        return <DateAndTimeSelection {...props} />;
       case 2:
-        return <FillGuestDetails {...props}/>;
+        return <FillGuestDetails {...{ getValues, register, errors }} />;
       case 0:
       default:
-        return <ProviderAndServiceSelection {...props}/>;
+        return (
+          <ProviderAndServiceSelection
+            {...{
+              getValues,
+              register,
+              setValue,
+              watch,
+            }}
+          />
+        );
     }
   };
 
   return (
     <>
-      <Card
-        className="p-shadow-10 p-d-block p-mx-auto p-mt-6"
-        style={{ width: "75%" }}
-      >
+      <div className="p-d-none p-d-md-inline">
         <Steps
           model={items}
           activeIndex={activeStepIndex}
           onSelect={(e) => setActiveStepIndex(e.index)}
           readOnly={true}
         />
-        {renderSwitch(activeStepIndex)}
-        <Divider />
-        <div className="p-grid p-justify-start">
-          {activeStepIndex > 0 && (
-            <Button
-              label="Previous"
-              className="p-m-3"
-              onClick={() => {
-                onPreviousClick();
-              }}
-            />
-          )}
-          {activeStepIndex < 2 && (
-            <Button
-              label={"Next"}
-              className="p-m-3"
-              onClick={() => {
-                onNextClick();
-              }}
-            />
-          )}
-        </div>
-      </Card>
+      </div>
+
+      {/* <form action="" method="post"> */}
+      {renderSwitch(activeStepIndex)}
+      <Divider />
+      <div className="p-d-flex p-p">
+        <Button
+          label="Previous"
+          disabled={activeStepIndex < 1}
+          className="p-m-3"
+          onClick={() => {
+            onPreviousClick();
+          }}
+        />
+
+        {activeStepIndex < 2 ? (
+          <Button
+            label={"Next"}
+            disabled={activeStepIndex >= 2}
+            className="p-m-3"
+            onClick={async () => {
+              await onNextClick();
+            }}
+          />
+        ) : (
+          <Button
+            label="Submit"
+            disabled={activeStepIndex !== 2}
+            className="p-my-3 p-ml-auto"
+            onClick={handleSubmit(onSubmit)}
+          />
+        )}
+      </div>
+
+      {/* </form> */}
     </>
   );
 };
