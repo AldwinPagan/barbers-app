@@ -10,7 +10,7 @@ interface SelectServiceProps {
   onClick: (serviceId: number) => void;
 }
 const SelectService: FC<SelectServiceProps> = ({
-  service:{id, name},
+  service: { id, name },
   selectedService = false,
   onClick,
 }) => {
@@ -30,10 +30,12 @@ const SelectService: FC<SelectServiceProps> = ({
       <Button
         className="p-button-text"
         type="button"
-        onClick={() => {onClick(id)}}
+        onClick={() => {
+          onClick(id);
+        }}
       >
         <Card
-          style={{ width: "10rem"}}
+          style={{ width: "10rem" }}
           header={header}
           className={`${
             selectedService ? "p-shadow-12" : "p-shadow-3"
@@ -45,45 +47,7 @@ const SelectService: FC<SelectServiceProps> = ({
           </div>
         </Card>
       </Button>
-      {/* <ForwardRefSelectService onClick={onClick} service={service} ref={ref} /> */}
     </>
   );
 };
-
-// const ForwardRefSelectService = forwardRef<UseFormRegisterReturn, SelectServiceProps>(
-//   ({ onClick, service: { id, name }, selectedService }, ref) => (
-//     <Button
-//       className=" p-button-text"
-//       type="button"
-//       onClick={() => onClick(id)}
-//       {...ref}
-//     >
-//       <Card
-//         style={{ width: "15rem", marginBottom: "2em" }}
-//         className={`${
-//           selectedService ? "p-shadow-12" : "p-shadow-3"
-//         } p-m-3 p-col-12 p-lg-3 p-xl-3`}
-//         key={id}
-//       >
-//         <div className="p-card-header">
-//           <div className="p-d-flex p-ai-center p-flex-wrap">
-//             <div className="p-field-checkbox" key={id}>
-//               <Checkbox
-//                 inputId={`service-${id}`}
-//                 value={id}
-//                 key={id}
-//                 checked={selectedService}
-//                 className="p-align-center"
-//               />
-//             </div>
-//             <div className="p-ml-5 p-card-title" style={{ textAlign: "start" }}>
-//               {name}
-//             </div>
-//           </div>
-//         </div>
-//       </Card>
-//     </Button>
-//   )
-// );
-
 export default SelectService;
