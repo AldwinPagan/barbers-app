@@ -4,46 +4,59 @@ import { Dropdown } from "primereact/dropdown";
 import {
   EmailInput,
   PhoneNumberInput,
-} from "../../../shared/components/text-input";
+} from "../../../../shared/components/text-input";
 import {
   DeepMap,
   FieldError,
   UseFormGetValues,
   UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
 } from "react-hook-form";
 import { useParams } from "@reach/router";
+import { Booking } from "../../models/Booking";
 
 interface contactMethod {
   name: string;
   code: string;
 }
 
-interface FillGuestDetailsProps {
-  register: UseFormRegister<any>;
-  getValues: UseFormGetValues<any>;
-  errors?: DeepMap<any, FieldError>;
+interface FillGuestDetailsProps<T> {
+  register: UseFormRegister<T>;
+  getValues: UseFormGetValues<T>;
+  setValue: UseFormSetValue<T>;
+  watch: UseFormWatch<T>;
+  errors?: DeepMap<T, FieldError>;
 }
 
-const FillGuestDetails: FC<FillGuestDetailsProps> = ({
+const FillGuestDetails: FC<FillGuestDetailsProps<Booking>> = ({
   register,
   errors,
   getValues,
+  setValue,
+  watch
+  
 }) => {
   const contactMethods: contactMethod[] = [
-    { name: "Text Message", code: "SMS" },
-    { name: "Email", code: "Email" },
-    { name: "Call", code: "Call" },
+    { name: "Mensaje de texto", code: "SMS" },
+    { name: "Correo electrónico", code: "Email" },
+    { name: "Llamada", code: "Call" },
   ];
   const NAME_REGEX = /['-\sa-zA-Z]/;
+
+  const onContactMethodChange = (e: Dropdown.ChangeParams) =>{
+    setValue("contactMethod", e.value);
+  }
   return (
     <>
+      <h2>Complete los datos personales</h2>
       <div className="p-fluid">
         <div className="p-field">
           <label
             htmlFor="firstName"
             className={`${errors?.firstName && "p-error"}`}
           >
-            First Name
+            Nombre
           </label>
           <InputText
             id="firstName"
@@ -64,7 +77,7 @@ const FillGuestDetails: FC<FillGuestDetailsProps> = ({
             htmlFor={"lastName"}
             className={`${errors?.lastName && "p-error"}`}
           >
-            Last Name
+            Apellido(s)
           </label>
           <InputText
             id="lastName"
@@ -83,7 +96,7 @@ const FillGuestDetails: FC<FillGuestDetailsProps> = ({
 
         <div className="p-field">
           <label htmlFor={"email"} className={`${errors?.email && "p-error"}`}>
-            Email
+            Correo electrónico
           </label>
           <EmailInput
             label={"email"}
@@ -97,7 +110,7 @@ const FillGuestDetails: FC<FillGuestDetailsProps> = ({
             htmlFor={"phoneNumber"}
             className={`${errors?.phoneNumber && "p-error"}`}
           >
-            Phone Number
+            Número de telefono
           </label>
           <PhoneNumberInput
             label={"phoneNumber"}
@@ -111,7 +124,7 @@ const FillGuestDetails: FC<FillGuestDetailsProps> = ({
             htmlFor={"contactMethod"}
             className={`${errors?.contactMethod && "p-error"}`}
           >
-            How can we reach you better?
+            ¿Cómo prefiere ser contactado?
           </label>
           <Dropdown
             id={"contactMethod"}
@@ -123,6 +136,8 @@ const FillGuestDetails: FC<FillGuestDetailsProps> = ({
             {...register("contactMethod", {
               required: "Contact Method is required",
             })}
+            onChange={onContactMethodChange}
+            value={watch("contactMethod")}
           />
           {errors?.contactMethod && (
             <small className="p-error">{errors?.contactMethod.message}</small>

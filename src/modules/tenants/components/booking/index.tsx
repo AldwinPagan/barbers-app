@@ -2,27 +2,24 @@ import { FC, useState } from "react";
 import { MenuItem } from "primereact/components/menuitem/MenuItem";
 import { Steps } from "primereact/steps";
 import { Divider } from "primereact/divider";
-import {
-  ProviderAndServiceSelection,
-  FillGuestDetails,
-  DateAndTimeSelection,
-} from ".";
+
+import ProviderAndServiceSelection from "./ProviderAndServiceSelection";
+import FillGuestDetails from "./FillGuestDetails";
+import DateAndTimeSelection from "./DateAndTimeSelection";
 import { Button } from "primereact/button";
-import { bindActionCreators } from "redux";
-import { EventState } from "../redux/states";
-import * as eventOperators from "../redux/operators";
 import { RouteComponentProps, useParams } from "@reach/router";
 
 import { useForm } from "react-hook-form";
-import { Booking as BookingModel } from "../models/Booking";
+import { Booking as BookingModel } from "../../models/Booking";
+import { submitBooking } from "../../redux/operators";
+import { TenantState } from "../../redux/states";
+import { bindActionCreators } from "redux";
+import { connect, useDispatch } from "react-redux";
 
-interface BookingProps extends RouteComponentProps {
-  submitBooking: (booking: BookingModel) => void;
-  events: EventState;
-}
+interface BookingProps extends RouteComponentProps {}
 
 const Booking: FC<BookingProps> = (props) => {
-  let { tenantId } = useParams();
+  // let { tenantId } = useParams();
   const {
     trigger,
     register,
@@ -30,9 +27,7 @@ const Booking: FC<BookingProps> = (props) => {
     getValues,
     watch,
     handleSubmit,
-
     formState: { errors },
-    control,
   } = useForm<BookingModel>({
     mode: "onChange",
     defaultValues: {
@@ -42,8 +37,8 @@ const Booking: FC<BookingProps> = (props) => {
 
   const [activeStepIndex, setActiveStepIndex] = useState(0);
 
-  console.log("Booking Component", getValues());
-
+  // console.log("Booking Component", getValues());
+  console.log("Booking useParams: ",useParams());
   const onNextClick = async () => {
     const isStepValid = await trigger();
     if (isStepValid)
@@ -59,23 +54,22 @@ const Booking: FC<BookingProps> = (props) => {
   };
   const items: MenuItem[] = [
     {
-      label: "Choose Services and Provider",
+      label: "Escoja servicio y barbero",
     },
     {
-      label: "Choose Date and Time",
+      label: "Escoja dia y hora",
     },
     {
-      label: "Fill in Personal Details",
+      label: "¿Cómo lo contactamos? ",
     },
   ];
 
   const onSubmit = (data: BookingModel) => {
     const form = {
-      // ...props.events.bookingForm,
       ...data,
-      tenantId,
+      // tenantId,
     };
-    props.submitBooking(form);
+    submitBooking(form);
     // console.log("Fill  Guest Details", { ...props.events.bookingForm });
   };
 
@@ -84,7 +78,11 @@ const Booking: FC<BookingProps> = (props) => {
       case 1:
         return <DateAndTimeSelection {...props} />;
       case 2:
-        return <FillGuestDetails {...{ getValues, register, errors }} />;
+        return (
+          <FillGuestDetails
+            {...{ getValues, setValue, watch, register, errors }}
+          />
+        );
       case 0:
       default:
         return (
@@ -147,19 +145,24 @@ const Booking: FC<BookingProps> = (props) => {
     </>
   );
 };
-
-function mapStateToProps({ events }: { events: EventState }) {
+function mapStateToProps({
+  bookingForm,
+  isBookingSuccess,
+  isBookingFailure,
+}: TenantState) {
   return {
-    events,
+    bookingForm,
+    isBookingSuccess,
+    isBookingFailure,
   };
 }
 
 function mapDispatchToProps(dispatch: any) {
   return bindActionCreators(
     {
-      ...eventOperators,
+      submitBooking,
     },
     dispatch
   );
 }
-export default Booking;
+export default connect(mapStateToProps, mapDispatchToProps)(Booking);

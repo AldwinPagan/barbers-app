@@ -1,15 +1,45 @@
 import { FC, useState } from "react";
 import { Button } from "primereact/button";
-import { EventState } from "../redux/states";
-import dayjs from "dayjs";
 interface DateAndTimeSelectionProps {
-  events: EventState;
+  // tenants: TenantState;
 }
 const DateAndTimeSelection: FC<DateAndTimeSelectionProps> = (props) => {
   const [month, setMonth] = useState<string | null>(null);
   const [dateOfMonth, setDateOfMonth] = useState<number | null>(null);
   const [time, setTime] = useState<string | null>(null);
+  /*
+  request example:
+  {
+    providerId: "",
+    servicesIds:[]
+  }
+  response example:
+  {
+    bring reservations from today to today + 3 months
+    reservedDates: [
+    "2021-08-10T08:30:00Z",
+    "2021-08-10T08:45:00Z",
+    "2021-08-11T08:15:00Z",
+    ],
+    servicesTimeInMinutes: 30,
+    
 
+    // 0 (Sunday) to 6 (Saturday).
+   
+    providerWorkingHours:[
+      [from, to],
+      [from, to],
+      [from, to],
+      [from, to],
+      [from, to],
+      [from, to],
+      [from, to],
+    ]
+
+  }
+  
+  
+  */
   const months: string[] = ["April", "May", "June", "July"];
   const dates: { dateOfMonth: number; weekDay: string }[] = [
     { dateOfMonth: 21, weekDay: "Tuesday" },
