@@ -37,12 +37,13 @@ const SelectProvider: FC<SelectProviderProps> = ({
   );
 
   return (
+    <>
     <Button
       className="p-button-text"
       type="button"
       onClick={() => onClick(provider.id)}
       {...register(label, {
-        required: required && "Provider35 selection is required Selection is Required",
+        required: required && "La seleccion de barbero es requerida",
       })}
     >
       
@@ -55,6 +56,7 @@ const SelectProvider: FC<SelectProviderProps> = ({
         }}
       />
     </Button>
+    </>
   );
 };
 

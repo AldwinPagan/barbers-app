@@ -1,12 +1,12 @@
-import states, { EventState } from "./states";
+import states, { TenantState } from "./states";
 import * as actions from "./actions";
 import { ReduxUtils } from "../../../shared/utils/ReduxUtils";
-import { EventAction } from "./actionCreators";
-export default function appointmentReducer(
-  state: EventState = states,
-  action: EventAction
-): EventState {
-  switch (action.type as actions.EventActionType) {
+import { TenantAction } from "./actionCreators";
+export default function tenantReducer(
+  state: TenantState = states,
+  action: TenantAction
+): TenantState {
+  switch (action.type as actions.TenantActionType) {
     case actions.BOOKING_PROVIDER_AND_SERVICES:
       console.log("reducer", { ...state.bookingForm }, action);
       return {
@@ -37,6 +37,25 @@ export default function appointmentReducer(
         ...state,
         ...ReduxUtils.reportEventStatus("isFillingBookingForm", false),
         error: "",
+      };
+    case actions.GETTING_TENANT_BY_ID:
+      return {
+        ...state,
+        ...ReduxUtils.reportEventStatus("isGettingTenantById"),
+        error: "",
+      };
+    case actions.GETTING_TENANT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        ...ReduxUtils.reportEventStatus("isGettingTenantById", true),
+        error: "",
+        tenant: action.tenant,
+      };
+    case actions.GETTING_TENANT_BY_ID_FAILURE:
+      return {
+        ...state,
+        ...ReduxUtils.reportEventStatus("isGettingTenantById", false),
+        error: action.error,
       };
     default:
       return state;
