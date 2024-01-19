@@ -6,11 +6,16 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 import { AppRoutes } from "./AppRoutes";
-
+import configureStore from "./shared/infra/redux/configureStore";
+import { Provider as ReduxProvider } from "react-redux";
+const store = configureStore({});
 ReactDOM.render(
   <React.StrictMode>
-    <AppRoutes />
+    <ReduxProvider store={store}>
+      <AppRoutes />
+    </ReduxProvider>
   </React.StrictMode>,
+
   document.getElementById("root")
 );
 

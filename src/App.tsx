@@ -1,11 +1,11 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { NavLink } from "react-router-dom";
-function App() {
+import { Link, RouteComponentProps } from "@reach/router";
+function App(props: RouteComponentProps) {
   return (
     <div className="App">
       <nav>
-        <NavLink to="/login">Login</NavLink>
+        <Link to="/auth/login">Login</Link>
       </nav>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />

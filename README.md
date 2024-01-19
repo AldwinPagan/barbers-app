@@ -47,7 +47,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Project Stucture
 
-Project structure was taken from [An Opinionated Guide to React: Folder Structure & File Naming](https://dev.to/farazamiruddin/an-opinionated-guide-to-react-folder-structure-file-naming-1l7i)
+Project structure was taken from [stemmlerjs/ddd-forum](https://github.com/stemmlerjs/ddd-forum/tree/master/public/app)
 
 ```
 /react-app
@@ -56,11 +56,26 @@ Project structure was taken from [An Opinionated Guide to React: Folder Structur
   /public
   /src
     /assets
-    /components
+    /config
     /contexts
     /lib
+    /modules
+      /dummy-module
+        /components
+        /models
+        /redux
+          /operators
+          actionCreators.ts
+          actions.ts
+          index.ts
+          reducers.ts
+          states.ts
     /pages
     /services
+    /shared
+      /components
+      /services
+    /stories
     /styles
     AppRoutes.tsx
     index.tsx
@@ -74,39 +89,33 @@ Project structure was taken from [An Opinionated Guide to React: Folder Structur
 
 - `/assets` - images, logos.
 
-- `/components` - components that are shared between multiple pages.
+- `/config` - environment variables and initialization used by the app.
 
-- `/components/__tests__` - for component testing
+- `/modules` - organizing the pages and component by related topic.
+  
+  - `/modules/dummy-module` - This should be substitute with whatever name the modules has.
 
-```
-/components
-  /__tests__
-    Button.test.tsx
-Button.tsx
-```
+    - `/modules/dummy-module/components` - components made with module related context.
 
+    - `/modules/dummy-module/models` - data models with module related context.
 
-- `/contexts` - To keep all of the context components in a separate folder, to not confuse them with plain old react components. A common context I like to implement is UserAuthContext.tsx.
-
-- `/lib` - When using a 3rd party library, let's say like Firebase for example, I like to put all of the initialization in a folder called lib. I'll then export the instance of that initialized library.
-
-``` ts
-import firebase from "firebase/app";
-firebase.initializeApp({
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID
-});
-export default firebase;
-```
+    - `/modules/dummy-module/redux` - module related actions, operators and reduced will be here.
 
 - `/pages` - Pages are also react components, but they represent a page or screen of an app. These map 1:1 with a route in the AppRoutes.tsx file.
 
-- `/services` - All the API methods are put in a folder called services. It is a good practise so that we don't put the business logic of an API call directly into a component, and so that any component can easily reference a service that it needs.
+- `/shared` - any item that could be shared between the project.
+
+  - `/shared/components` - components that are shared between multiple pages.
+  
+  - `/shared/layouts` - pages layouts.
+
+  - `/shared/services` - All the API methods are put in a folder called services. It is a good practise so that we don't put the business logic of an API call directly into a component, and so that any component can easily reference a service that it needs.
+
+- `/stories` - components that should be used in storybook.
 
 - `/styles` - This styles folder is where the generated styles and any custom css goes.
 
-- `AppRoutes` - This file contains all the routes of the application. 
+- `AppRoutes` - This file contains all the routes of the application.
 
 - `index.tsx` - This is your typical index file, where you render your React app to the document.
 
